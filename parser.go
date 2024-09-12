@@ -37,7 +37,7 @@ func (P *parser) Parse() {
 			} else if P.currentToken.Type == TokenStar || P.currentToken.Type == TokenSlash {
 				P.term()
 			} else {
-				panic("Expected '=' after variable")
+				panic("Expected '=', '+', '-', '*', or '/' after variable")
 			}
 
 		} else {
