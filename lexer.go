@@ -5,78 +5,78 @@ import (
 )
 
 // Lexer represents a lexical analyzer
-type Lexer struct {
+type lexer struct {
 	input string
 	pos   int
 	ch    byte
 }
 
 // NewLexer creates a new lexer instance
-func NewLexer(input string) *Lexer {
-	l := &Lexer{input: input}
-	l.readChar()
-	return l
+func Newlexer(input string) *lexer {
+	L := &lexer{input: input}
+	L.readChar()
+	return L
 }
 
 // readChar reads the next character from the input
-func (l *Lexer) readChar() {
-	if l.pos >= len(l.input) {
-		l.ch = 0
+func (L *lexer) readChar() {
+	if L.pos >= len(L.input) {
+		L.ch = 0
 	} else {
-		l.ch = l.input[l.pos]
+		L.ch = L.input[L.pos]
 	}
-	l.pos++
+	L.pos++
 }
 
 // NextToken returns the next token from the input
-func (l *Lexer) NextToken() Token {
-	for unicode.IsSpace(rune(l.ch)) {
-		l.readChar()
+func (L *lexer) Nexttoken() Token {
+	for unicode.IsSpace(rune(L.ch)) {
+		L.readChar()
 	}
 
-	switch l.ch {
+	switch L.ch {
 	case '+':
-		l.readChar()
+		L.readChar()
 		return Token{Type: TokenPlus, Value: "+"}
 	case '-':
-		l.readChar()
+		L.readChar()
 		return Token{Type: TokenMinus, Value: "-"}
 	case '*':
-		l.readChar()
+		L.readChar()
 		return Token{Type: TokenStar, Value: "*"}
 	case '/':
-		l.readChar()
+		L.readChar()
 		return Token{Type: TokenSlash, Value: "/"}
 	case '=':
-		l.readChar()
+		L.readChar()
 		return Token{Type: TokenAssign, Value: "="}
 	case 0:
 		return Token{Type: TokenEOF, Value: ""}
 	default:
-		if unicode.IsLetter(rune(l.ch)) {
-			return l.readVariable()
+		if unicode.IsLetter(rune(L.ch)) {
+			return L.readVariable()
 		}
-		if unicode.IsDigit(rune(l.ch)) {
-			return l.readNumber()
+		if unicode.IsDigit(rune(L.ch)) {
+			return L.readNumber()
 		}
 		return Token{Type: TokenEOF, Value: ""}
 	}
 }
 
 // readNumber reads a number from the input
-func (l *Lexer) readNumber() Token {
-	startPos := l.pos - 1
-	for unicode.IsDigit(rune(l.ch)) {
-		l.readChar()
+func (L *lexer) readNumber() Token {
+	startPos := L.pos - 1
+	for unicode.IsDigit(rune(L.ch)) {
+		L.readChar()
 	}
-	return Token{Type: TokenNumber, Value: l.input[startPos : l.pos-1]}
+	return Token{Type: TokenNumber, Value: L.input[startPos : L.pos-1]}
 }
 
 // readVariable reads a variable from the input
-func (l *Lexer) readVariable() Token {
-	startPos := l.pos - 1
-	for unicode.IsLetter(rune(l.ch)) || unicode.IsDigit(rune(l.ch)) {
-		l.readChar()
+func (L *lexer) readVariable() Token {
+	startPos := L.pos - 1
+	for unicode.IsLetter(rune(L.ch)) || unicode.IsDigit(rune(L.ch)) {
+		L.readChar()
 	}
-	return Token{Type: TokenVariable, Value: l.input[startPos : l.pos-1]}
+	return Token{Type: TokenVariable, Value: L.input[startPos : L.pos-1]}
 }

@@ -6,21 +6,16 @@ import (
 )
 
 func main() {
-	if len(os.Args) < 2 {
-		fmt.Println("Usage: go run main.go <program_file>")
-		return
-	}
 
-	programFile := os.Args[1]
-	content, err := os.ReadFile(programFile)
+	content, err := os.ReadFile("program.txt")
 	if err != nil {
 		fmt.Println("Error reading file:", err)
 		return
 	}
 
 	input := string(content)
-	lexer := NewLexer(input)
-	parser := NewParser(lexer)
+	lexer := Newlexer(input)
+	parser := Newparser(lexer)
 
 	parser.Parse()
 }

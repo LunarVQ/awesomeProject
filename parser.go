@@ -4,89 +4,99 @@ import (
 	"strconv"
 )
 
-// Parser represents a parser
-type Parser struct {
-	lexer        *Lexer
+// parser represents a parser
+type parser struct {
+	lexer        *lexer
 	currentToken Token
 	variables    map[string]int
 }
 
-// NewParser creates a new parser instance
-func NewParser(lexer *Lexer) *Parser {
-	p := &Parser{lexer: lexer, variables: make(map[string]int)}
-	p.nextToken()
+// Newparser creates a new parser instance
+func Newparser(lexer *lexer) *parser {
+	p := &parser{lexer: lexer, variables: make(map[string]int)}
+	p.NextToken()
 	return p
 }
 
-// nextToken advances to the next token
-func (p *Parser) nextToken() {
-	p.currentToken = p.lexer.NextToken()
+// NextToken advances to the next token
+func (P *parser) NextToken() {
+	P.currentToken = P.lexer.Nexttoken()
 }
 
 // Parse parses the input and returns the result
-func (p *Parser) Parse() {
-	for p.currentToken.Type != TokenEOF {
-		if p.currentToken.Type == TokenVariable {
-			p.handleAssignment()
+func (P *parser) Parse() {
+	for P.currentToken.Type != TokenEOF {
+		if P.currentToken.Type == TokenVariable {
+			P.NextToken() // Skip variable
+			if P.currentToken.Type == TokenPlus || P.currentToken.Type == TokenMinus {
+				P.expr()
+
+			} else if P.currentToken.Type == TokenAssign {
+				P.handleAssignment()
+
+			} else if P.currentToken.Type == TokenStar || P.currentToken.Type == TokenSlash {
+				P.term()
+			} else {
+				panic("Expected '=' after variable")
+			}
+
 		} else {
-			result := p.expr()
+			result := P.expr()
 			println(result)
 		}
 	}
 }
 
-func (p *Parser) handleAssignment() {
-	varName := p.currentToken.Value
-	p.nextToken() // Skip variable
-	if p.currentToken.Type != TokenAssign {
-		panic("Expected '=' after variable")
-	}
-	p.nextToken() // Skip '='
-	result := p.expr()
-	p.variables[varName] = result
+func (P *parser) handleAssignment() {
+
+	varName := P.currentToken.Value
+
+	P.NextToken() // Skip '='
+	result := P.expr()
+	P.variables[varName] = result
 }
 
-func (p *Parser) expr() int {
-	result := p.term()
-	for p.currentToken.Type == TokenPlus || p.currentToken.Type == TokenMinus {
-		op := p.currentToken
-		p.nextToken()
+func (P *parser) expr() int {
+	result := P.term()
+	for P.currentToken.Type == TokenPlus || P.currentToken.Type == TokenMinus {
+		op := P.currentToken
+		P.NextToken()
 		if op.Type == TokenPlus {
-			result += p.term()
+			result += P.term()
 		} else if op.Type == TokenMinus {
-			result -= p.term()
+			result -= P.term()
 		}
 	}
 	return result
 }
 
-func (p *Parser) term() int {
-	result := p.factor()
-	for p.currentToken.Type == TokenStar || p.currentToken.Type == TokenSlash {
-		op := p.currentToken
-		p.nextToken()
+func (P *parser) term() int {
+	result := P.factor()
+	for P.currentToken.Type == TokenStar || P.currentToken.Type == TokenSlash {
+		op := P.currentToken
+		P.NextToken()
 		if op.Type == TokenStar {
-			result *= p.factor()
+			result *= P.factor()
 		} else if op.Type == TokenSlash {
-			result /= p.factor()
+			result /= P.factor()
 		}
 	}
 	return result
 }
 
-func (p *Parser) factor() int {
-	token := p.currentToken
+func (P *parser) factor() int {
+	token := P.currentToken
 	if token.Type == TokenNumber {
 		value, _ := strconv.Atoi(token.Value)
-		p.nextToken()
+		P.NextToken()
 		return value
 	}
 	if token.Type == TokenVariable {
-		value, exists := p.variables[token.Value]
+		value, exists := P.variables[token.Value]
 		if !exists {
 			panic("Undefined variable: " + token.Value)
 		}
-		p.nextToken()
+		P.NextToken()
 		return value
 	}
 	panic("Unexpected token: " + token.Value)
