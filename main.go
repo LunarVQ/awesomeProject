@@ -13,13 +13,7 @@ func main() {
 		return
 	}
 
-	//	Takes input file coverts to string then runs tokenizer
+	//	Takes input file coverts to string then runs parser
 	input := string(file)
-	tokenizer := NewTokenizer(input)
-	tokens := tokenizer.Tokenize()
-
-	// for loop to show which tokens are scanned (THIS WILL BE YOUR SAVIOR LATER IN PARSING)
-	for _, token := range tokens {
-		fmt.Printf("Type: %s, Value: %s\n", token.Type, token.Value)
-	}
+	newparser(input)
 }

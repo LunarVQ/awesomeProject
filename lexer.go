@@ -9,12 +9,13 @@ import (
 type TokenType string
 
 const (
-	TokenKeyword     TokenType = "KEYWORD"
-	TokenIdentifier  TokenType = "IDENTIFIER"
-	TokenNumber      TokenType = "NUMBER"
-	TokenSymbol      TokenType = "SYMBOL"
-	TokenCharLiteral TokenType = "CHAR_LITERAL" // New token type for char literals
-	TokenEOF         TokenType = "EOF"
+	TokenKeyword       TokenType = "KEYWORD"
+	TokenIdentifier    TokenType = "IDENTIFIER"
+	TokenNumber        TokenType = "NUMBER"
+	TokenSymbol        TokenType = "SYMBOL"
+	TokenCharLiteral   TokenType = "CHAR_LITERAL"
+	TokenStringLiteral TokenType = "STRING_LITERAL"
+	TokenEOF           TokenType = "EOF"
 )
 
 // Token structure with type and value
@@ -60,7 +61,7 @@ var keywords = map[string]KeyWord{
 	"default": KeyWordDefault,
 	"switch":  KeyWordSwitch,
 	"case":    KeyWordCase,
-	"char":    KeyWordChar, // Added KeyWordChar to the map
+	"char":    KeyWordChar,
 }
 
 // Tokenizer structure with input and current position
@@ -118,6 +119,10 @@ func (t *Tokenizer) GetNextToken() Token {
 		return t.readCharLiteral()
 	}
 
+	if t.currentChar == '"' {
+		return t.readStringLiteral()
+	}
+
 	if t.currentChar == 0 {
 		return Token{Type: TokenEOF, Value: ""}
 	}
@@ -172,6 +177,23 @@ func (t *Tokenizer) readCharLiteral() Token {
 	}
 	// Handle error case (e.g., if closing quote is missing)
 	return Token{Type: TokenSymbol, Value: string(charValue)} // Could also return an error token
+}
+
+// Read string literal token
+func (t *Tokenizer) readStringLiteral() Token {
+	t.advance() // Skip the opening double quote
+	start := t.position - 1
+	for unicode.IsLetter(t.currentChar) || unicode.IsDigit(t.currentChar) {
+		t.advance()
+	}
+	value := t.input[start : t.position-1]
+
+	if t.currentChar == '"' {
+		t.advance() // Skip the closing double quote
+		return Token{Type: TokenStringLiteral, Value: value}
+	}
+	// Handle error case (e.g., if closing quote is missing)
+	return Token{Type: TokenIdentifier, Value: value} // Could also return an error token
 }
 
 // Tokenize the entire input
