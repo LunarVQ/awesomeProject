@@ -42,7 +42,7 @@ const (
 	KeyWordDefault KeyWord = "default"
 	KeyWordSwitch  KeyWord = "switch"
 	KeyWordCase    KeyWord = "case"
-	KeyWordChar    KeyWord = "char" // char keyword
+	KeyWordChar    KeyWord = "char"
 )
 
 // A map of keywords for easy lookup
