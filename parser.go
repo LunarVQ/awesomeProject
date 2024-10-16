@@ -4,27 +4,30 @@ import (
 	"fmt"
 )
 
-type parsing struct {
-	Type        TokenType
-	input       string
-	position    int
-	currentChar rune
+type parser struct {
+	lexer          []Token
+	token          Token
+	intvariables   map[string]int64
+	floatvariables map[string]float64
 }
 
-func newparser(input string) *parsing {
-	p := &parsing{
-		input:    input,
-		position: 0,
+func newparser(lexer []Token) *parser {
+	p := &parser{
+		lexer:          lexer,
+		intvariables:   make(map[string]int64),
+		floatvariables: make(map[string]float64),
 	}
+	return p
+}
+
+func (p *parser) Parse() *parser {
 	//	Takes input file coverts to string then runs tokenizer
-	tokenizer := NewTokenizer(p.input)
-	tokens := tokenizer.Tokenize()
 
 	// for loop to show which tokens are scanned (THIS WILL BE YOUR SAVIOR LATER IN PARSING)
-	for _, token := range tokens {
+	for _, token := range p.lexer {
 		fmt.Printf("Type: %s, Value: %s\n", token.Type, token.Value)
 
-		/*if token.Type == TokenKeyword {
+		if token.Type == TokenKeyword {
 			return p.keywordAction(TokenType(token.Value))
 		}
 
@@ -53,27 +56,27 @@ func newparser(input string) *parsing {
 		if token.Type == TokenNumber {
 			return p.SaveVar(TokenType(token.Value))
 		}
-		*/
+
 	}
 	return nil
 }
 
-/*
 // Takes values of keywords, outputs an action if actionable keyword otherwise initalizes
-func (p *parsing) keywordAction(tokenType TokenType) *parsing {
+func (p *parser) keywordAction(tokenType TokenType) *parser {
+	fmt.Printf("Action-, %s\n")
+
 	return nil
 }
 
-func (p *parsing) identifyVar(TokenType) *parsing {
+func (p *parser) identifyVar(TokenType) *parser {
 	return nil
 }
 
 // Saves a given Token value to an idetified token
-func (p *parsing) SaveVar(tokenType TokenType) *parsing {
+func (p *parser) SaveVar(tokenType TokenType) *parser {
 	return nil
 }
 
-func (p *parsing) identifySymbol(TokenType) *parsing {
+func (p *parser) identifySymbol(TokenType) *parser {
 	return nil
 }
-*/

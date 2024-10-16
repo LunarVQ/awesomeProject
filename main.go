@@ -15,5 +15,9 @@ func main() {
 
 	//	Takes input file coverts to string then runs parser
 	input := string(file)
-	newparser(input)
+	tokenizer := NewTokenizer(input)
+	tokens := tokenizer.Tokenize()
+	parsing := newparser(tokens)
+	parsing.Parse()
+
 }

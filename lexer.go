@@ -43,6 +43,7 @@ const (
 	KeyWordSwitch  KeyWord = "switch"
 	KeyWordCase    KeyWord = "case"
 	KeyWordChar    KeyWord = "char"
+	KeyWordFunc    KeyWord = "fn"
 )
 
 // A map of keywords for easy lookup
@@ -62,6 +63,7 @@ var keywords = map[string]KeyWord{
 	"switch":  KeyWordSwitch,
 	"case":    KeyWordCase,
 	"char":    KeyWordChar,
+	"fn":      KeyWordFunc,
 }
 
 // Tokenizer structure with input and current position
