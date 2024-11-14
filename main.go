@@ -17,7 +17,11 @@ func main() {
 	input := string(file)
 	tokenizer := NewTokenizer(input)
 	tokens := tokenizer.Tokenize()
-	parsing := newparser(tokens)
-	parsing.Parse()
+	parsing := NewParser(tokens)
+	ast := parsing.Parse()
+	fmt.Println("Generated AST:")
+	for _, node := range ast {
+		fmt.Println(node)
+	}
 
 }
